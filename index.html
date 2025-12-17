@@ -244,7 +244,7 @@ try{
 const rollingResp=await fetch('rolling_ics.csv');
 const rollingText=await rollingResp.text();
 const rollingData=parseCSV(rollingText);
-const solRolling=rollingData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h')&&d.period==='holdout');
+const solRolling=rollingData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h'));
 if(solRolling.length>0){
 const dates=solRolling.map(d=>d.date);
 const ics=solRolling.map(d=>parseFloat(d.rolling_ic));
@@ -286,7 +286,7 @@ try{
 const quantileResp=await fetch('quantile_returns.csv');
 const quantileText=await quantileResp.text();
 const quantileData=parseCSV(quantileText);
-const ethQuant=quantileData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h')&&d.period==='val');
+const ethQuant=quantileData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h'));
 if(ethQuant.length>0){
 const deciles=ethQuant.map(d=>parseInt(d.decile));
 const returns=ethQuant.map(d=>parseFloat(d.avg_return));
@@ -324,8 +324,8 @@ try{
 const monthlyResp=await fetch('monthly_ics.csv');
 const monthlyText=await monthlyResp.text();
 const monthlyData=parseCSV(monthlyText);
-const solMonthly=monthlyData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h')&&d.period==='holdout');
-const ethMonthly=monthlyData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h')&&d.period==='holdout');
+const solMonthly=monthlyData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h'));
+const ethMonthly=monthlyData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h'));
 if(solMonthly.length>0&&ethMonthly.length>0){
 const months=solMonthly.map(d=>d.month.substring(0,7));
 const solICs=solMonthly.map(d=>parseFloat(d.monthly_ic));
