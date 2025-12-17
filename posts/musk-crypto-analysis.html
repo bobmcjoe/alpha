@@ -86,7 +86,7 @@
 <li><strong>Metric:</strong> Spearman rank correlation (IC) between feature and forward returns</li>
 <li><strong>Selection criteria:</strong> Only consider hypotheses with |val_IC| > 0.02, |holdout_IC| > 0.01, and consistent sign</li>
 </ol>
-<p>The Spearman IC is the workhorse metric in quantitative equity research. It measures rank correlation: if the feature ranks coins/times correctly by future returns, IC is high. It's robust to outliers and doesn't assume linearity.</p>
+<p>The Spearman IC is the most important metric here. It measures rank correlation: if the feature ranks coins/times correctly by future returns, IC is high. It's robust to outliers and doesn't assume linearity.</p>
 <h2>Results</h2>
 <p>Here's what I found:</p>
 <h3>Top Hypotheses (Validation IC)</h3>
@@ -155,7 +155,7 @@ Surprisingly, explicit coin mentions weren't more predictive than general engage
 <div class="plot-container">
 <h3>Rolling 30-Day IC: SOL Engagement → 24h Returns</h3>
 <div id="rolling-ic-plot"></div>
-<p style="margin-top:15px;color:#666;font-size:0.9em;">This shows how the relationship between Musk engagement and SOL returns evolved over time. While the overall average is negative, notice the substantial volatility—there are entire months where the signal disappears or even flips positive.</p>
+<p style="margin-top:15px;color:#666;font-size:0.9em;">This shows how the relationship between Musk engagement and SOL returns evolved over time. While the overall average is negative, make a note of the substantial volatility. There are entire months where the signal disappears or even flips positive.</p>
 </div>
 <div class="plot-container">
 <h3>Returns by Engagement Decile: ETH 4h</h3>
@@ -178,33 +178,20 @@ I expected positive correlation: Musk tweets → attention → buying. But SOL s
 <li><strong>Liquidity differences:</strong> SOL is less liquid than BTC/ETH, making it more prone to overreactions and reversals</li>
 </ul>
 <p><strong>How Noisy Everything Is</strong><br>
-Even the "best" signals have ICs well below 0.15. The rolling IC charts show these relationships aren't stable—they come and go. The ETH decile chart is particularly humbling: there's no clean monotonic relationship despite a positive overall IC. This is a reminder that market microstructure is complex and single-factor models are fragile.</p>
+Even the "best" signals have wildly unstable ICs that flip constantly. The rolling IC charts show these relationships aren't stable, and the ETH decile chart solidifies that there's no clean monotonic relationship despite a positive overall IC. This is a reminder that market microstructure is complex and single-factor models are fragile.</p>
 <p><strong>BTC's Resistance</strong><br>
 BTC barely responded to Musk's tweets. This aligns with the narrative that BTC has "matured" beyond single-influencer effects. Institutional holders don't trade on tweets.</p>
 <h2>Limitations & Honest Assessment</h2>
 <p><strong>Economically Tiny Effects</strong><br>
-An IC of 0.05 is statistically detectable but economically minuscule. After transaction costs, slippage, and funding rates, it's unclear if this would be profitable even with perfect execution. These aren't tradeable signals—they're evidence of weak informational relationships.</p>
+An IC of 0.05 is statistically detectable, however, if architecting a strategy based on these signals, after transaction costs, slippage, and funding rates, it's unclear if this would be profitable even with perfect execution. These aren't tradeable signals—they're evidence of weak informational relationships.</p>
 <p><strong>Extreme Instability</strong><br>
-The rolling IC charts reveal the truth: these signals are highly regime-dependent. A strategy based on these features would have performed wildly differently across 2023 vs 2024, or even month-to-month. This instability makes them unreliable for any practical application.</p>
+The rolling IC charts show the signals are highly regime-dependent. A strategy based on these features would have performed wildly differently across 2023 vs 2024, or even month-to-month. This instability makes them unreliable for any practical application.</p>
 <p><strong>Causality vs Correlation</strong><br>
 I can't prove Musk's tweets <em>cause</em> price moves. Maybe he tweets when he sees interesting price action. Maybe both are driven by third factors (news, macro events). Future event studies with minute-level timestamp granularity would help isolate causality.</p>
 <p><strong>Sentiment Completely Ignored</strong><br>
 This is probably the greatest limitation. I treated all tweets equally by engagement, but a tweet saying "DOGE to the moon!" is fundamentally different from "Worried about crypto regulation." Sentiment analysis would add crucial context, though it would also add substantial complexity.</p>
 <p><strong>Single Influencer Risk</strong><br>
 Musk isn't the only voice that matters. Vitalik Buterin, CZ, Michael Saylor, and others can move markets. An ensemble model tracking multiple influencers would be more robust, though still subject to the same fundamental issues of noise and instability.</p>
-<h2>Should You Trade This?</h2>
-<p><strong>Absolutely not.</strong></p>
-<p>These signals are far too weak, inconsistent, and unstable to form the basis of a trading strategy. The ICs are small, the relationships flip across time periods, and transaction costs would likely eat any potential edge. This was a research exercise in hypothesis testing and market microstructure, not a path to profitability.</p>
-<p>If you're interested in social sentiment strategies, you'd need: (1) sentiment classification of tweets, (2) an ensemble of multiple influencers, (3) combination with fundamental and technical signals, (4) sophisticated execution modeling, and (5) continuous re-calibration as relationships shift. Even then, success is far from guaranteed.</p>
-<h2>Next Steps</h2>
-<p>If I continue this project, here's what I'd do:</p>
-<ol>
-<li><strong>Sentiment Analysis:</strong> Use LLMs or sentiment models to classify tweets as bullish/bearish/neutral. Test whether sentiment × engagement is more predictive than engagement alone.</li>
-<li><strong>Intraday Event Studies:</strong> Zoom into specific high-impact tweets with minute-level granularity to measure immediate market reactions and distinguish causality from correlation.</li>
-<li><strong>Multi-Influencer Index:</strong> Expand to track 20-30 crypto influencers weighted by their follower base and historical impact. Build a composite "attention index."</li>
-<li><strong>Volatility as Target:</strong> Test whether Musk tweets predict volatility spikes rather than directional moves. This might be more reliable and easier to monetize through options.</li>
-<li><strong>Regime Detection:</strong> Build a model to identify when these relationships are "on" vs "off" rather than assuming static correlations.</li>
-</ol>
 <h2>Conclusion</h2>
 <p>So does Elon Musk move crypto markets? The answer is: <strong>barely, and inconsistently</strong>.</p>
 <p>There's measurable but incredibly noisy signal in his Twitter activity. SOL shows a persistent (though volatile) negative relationship between attention and forward returns, possibly reflecting overreaction and reversal. ETH shows essentially no stable relationship despite small positive ICs in some periods. BTC is unaffected.</p>
@@ -316,8 +303,8 @@ const months=solMonthly.map(d=>d.month.substring(0,7));
 const solICs=solMonthly.map(d=>parseFloat(d.monthly_ic));
 const ethICs=ethMonthly.map(d=>parseFloat(d.monthly_ic));
 Plotly.newPlot('monthly-ic-plot',[
-{x:months,y:solICs,type:'scatter',mode:'lines+markers',name:'SOL (24h)',line:{color:'#d32f2f',width:2}},
-{x:months,y:ethICs,type:'scatter',mode:'lines+markers',name:'ETH (4h)',line:{color:'#388e3c',width:2}}
+{x:months,y:solICs,type:'scatter',mode:'lines+markers',name:'SOL',line:{color:'#d32f2f',width:2}},
+{x:months,y:ethICs,type:'scatter',mode:'lines+markers',name:'ETH',line:{color:'#388e3c',width:2}}
 ],{
 margin:{l:50,r:30,t:20,b:80},
 xaxis:{title:'Month',gridcolor:'#e0e0e0',tickangle:-45},
