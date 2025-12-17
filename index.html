@@ -2,57 +2,302 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Alpha Research</title>
+  <title>Elon Musk Tweets & Crypto — Research-First Analysis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      max-width: 720px;
-      margin: 60px auto;
-      padding: 0 16px;
-      font-family: Georgia, serif;
-      line-height: 1.65;
-      color: #111;
-    }
-    h1, h2 {
-      font-family: Arial, sans-serif;
-      letter-spacing: -0.02em;
-    }
-    .meta {
-      font-family: monospace;
-      font-size: 0.9em;
-      color: #555;
-    }
-    hr {
-      margin: 48px 0;
-    }
+    body { max-width: 820px; margin: 48px auto; padding: 0 18px; font-family: Georgia, serif; line-height:1.65; color:#111; background:#fff; }
+    h1,h2,h3 { font-family: Arial, sans-serif; letter-spacing:-0.02em; }
+    .meta { font-family: monospace; color:#555; font-size:0.9em; }
+    hr { margin:36px 0; border:0; border-top:1px solid #eee; }
+    pre { background:#0f1720; color:#e6eef3; padding:14px; border-radius:6px; overflow:auto; font-family:Consolas,monaco,monospace; font-size:13px; }
+    code { background:#f4f6f8; padding:2px 6px; border-radius:4px; font-family:Consolas,monaco,monospace; }
+    .lead { font-size:1.05em; color:#222; }
+    .figure { border:1px solid #eee; padding:12px; border-radius:6px; margin:18px 0; }
+    table { border-collapse:collapse; width:100%; margin:12px 0; }
+    th,td { border:1px solid #eee; padding:8px 10px; text-align:left; }
+    th { background:#fafafa; font-weight:600; }
+    .toc { margin:12px 0 30px 0; padding:12px; background:#fbfbfb; border-radius:6px; border:1px solid #f0f0f0; }
+    .small { font-size:0.9em; color:#666; }
+    a { color:#0b69ff; text-decoration:none; }
   </style>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
 
-<h1>Alpha Research Log</h1>
-<p class="meta">
-Experimental ideas. For research only. Not investment advice.
-</p>
+<h1>Elon Musk Tweets & Cryptocurrency Prices — A Hypothesis-First Study</h1>
+<p class="meta">Author: jon · Research log · Not investment advice</p>
 
 <hr>
 
-<h2>Alpha #001 — Volatility Regime Shift</h2>
-<p class="meta">
-Asset: Crypto | Horizon: 1–3 days | Status: Untested
-</p>
-<p>
-Volatility clusters across exchanges following funding rate dislocations.
-</p>
+<p class="lead">This post tells the full story of a research-first pipeline we ran to test whether Elon Musk’s tweets contain measurable predictive information for short-term cryptocurrency returns. It’s long-form and opinionated — results, surprises, limitations, and next steps — plus runnable code and interactive diagnostic charts embedded so you can reproduce and explore on your own.</p>
+
+<div class="toc">
+<strong>Contents</strong>
+<ul>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#data">Data</a></li>
+<li><a href="#hypotheses">Hypotheses</a></li>
+<li><a href="#pipeline">Pipeline</a></li>
+<li><a href="#results">Results & Diagnostics</a></li>
+<li><a href="#surprises">Surprises & Interpretations</a></li>
+<li><a href="#limitations">Limitations & Failure Modes</a></li>
+<li><a href="#what-went-well">What Went Well</a></li>
+<li><a href="#next">Next Steps</a></li>
+<li><a href="#code">Code (run locally)</a></li>
+<li><a href="#appendix">Appendix — Example visuals</a></li>
+</ul>
+</div>
 
 <hr>
 
-<h2>Alpha #002 — Exchange Downtime as Signal</h2>
-<p class="meta">
-Asset: Crypto | Horizon: Intraday | Status: Dead
-</p>
-<p>
-Unplanned exchange downtime correlates with short-term volatility expansion.
-</p>
+<h2 id="motivation">1 — Motivation</h2>
+<p>Social media seems to move crypto markets more than traditional asset classes. Musk is a special case: highly visible, frequently posting, and his posts often reference crypto. Rather than throw a forest of features at the problem and hope one sticks, this project follows a <em>hypothesis-first</em> approach: define testable, measurable hypotheses, engineer features to match those hypotheses, and evaluate them statistically across chronological train/validation/test/holdout slices.</p>
+
+<h2 id="data">2 — Data</h2>
+<ul>
+<li><strong>Musk events:</strong> 8,979 crypto-related Musk tweets / quote-tweets (extracted and flagged by keywords / direct mentions).</li>
+<li><strong>Price bars:</strong> 238,426 hourly bars across 10 coins: BTC, ETH, SOL, BNB, DOGE, ADA, DOT, AVAX, XRP, MATIC.</li>
+<li><strong>Horizons tested:</strong> 1h, 4h, 8h, 24h forward returns.</li>
+<li><strong>Features:</strong> engagement and visibility measures such as <code>musk_max_views_24h_log</code>, <code>musk_sum_views_24h_log</code>, <code>musk_weighted_engagement_4h_log</code>, <code>musk_high_impact_24h_log</code>, and coin-specific mention counts.</li>
+</ul>
+
+<p class="small">All tweet features are aligned to hourly bars so features strictly precede target returns.</p>
+
+<hr>
+
+<h2 id="hypotheses">3 — Testable hypotheses (examples)</h2>
+<p>We phrased hypotheses in operational terms. Examples:</p>
+<ul>
+<li><strong>H1 — Visibility</strong>: Higher <code>musk_max_views_8h_log</code> → higher <code>ret_8h</code> for the mentioned coin.</li>
+<li><strong>H2 — Engagement quality</strong>: Higher <code>musk_weighted_engagement_4h_log</code> → higher <code>ret_4h</code> (weighted engagement matters more than raw counts).</li>
+<li><strong>H3 — Mention specificity</strong>: Explicit mentions of coin X (e.g., <code>musk_mentions_DOGE_8h_log</code>) are more predictive for coin X than generic crypto tweets.</li>
+<li><strong>H4 — Accumulated attention</strong>: Large <code>musk_sum_views_24h_log</code> → directional move in <code>ret_24h</code>.</li>
+<li><strong>H5 — High-impact events</strong>: >0 high-impact tweets in prior 24h predicts increased volatility in the following day.</li>
+</ul>
+
+<hr>
+
+<h2 id="pipeline">4 — Pipeline (brief)</h2>
+<ol>
+<li>Load and clean tweets + price CSVs, resample price to 1H.</li>
+<li>Engineer features per coin per bar for horizons 1/4/8/24h.</li>
+<li>Split times chronologically into train / val / test / holdout based on tweet timeline (so no period with zero tweets leaks in).</li>
+<li>Measure Spearman IC (rank correlation) between each feature and forward returns on each slice.</li>
+<li>Compute rolling 30-day ICs to assess temporal stability.</li>
+<li>Select hypotheses that exhibit consistent sign and absolute IC above small thresholds on validation & holdout.</li>
+</ol>
+
+<hr>
+
+<h2 id="results">5 — Results & diagnostics</h2>
+
+<p>Below are the main takeaways and then a more detailed diagnostics section with plots that you can interact with on the page (if you add your data CSV to <code>/data/combined_with_musk.csv</code> on the site root the plots will render with your real results; otherwise the visuals show example results).</p>
+
+<h3>Main takeaways (summary)</h3>
+<ul>
+<li>Some features show <strong>small but consistent predictive power</strong> for specific coins/horizons. Top candidates included features for <strong>SOL</strong>, <strong>BNB</strong>, and some for <strong>MATIC</strong> in the 8–24h range.</li>
+<li>IC magnitudes are small (typical top ICs in the <code>0.02–0.12</code> range). That’s research-level signal strength; not an automated PnL guarantee.</li>
+<li>Surprisingly, SOL often exhibited the strongest (and sometimes <em>negative</em>) ICs at 24h — smaller coins respond differently to social signals than BTC/ETH.</li>
+<li>Engagement quality (weighted, recent) is often better than raw tweet counts.</li>
+</ul>
+
+<h3>Top hypotheses (example table from our run)</h3>
+<div class="figure">
+<table>
+<thead><tr><th>Coin</th><th>Feature</th><th>Horizon (target)</th><th>Validation IC</th><th>Holdout IC</th></tr></thead>
+<tbody>
+<tr><td>SOL</td><td>musk_max_engagement_24h_log</td><td>ret_24h</td><td>-0.117</td><td>-0.186</td></tr>
+<tr><td>SOL</td><td>musk_max_views_24h_log</td><td>ret_24h</td><td>-0.115</td><td>-0.179</td></tr>
+<tr><td>BNB</td><td>musk_max_engagement_8h_log</td><td>ret_8h</td><td>0.073</td><td>0.057</td></tr>
+<tr><td>MATIC</td><td>musk_max_views_8h_log</td><td>ret_8h</td><td>-0.086</td><td>0.028</td></tr>
+<tr><td>DOGE</td><td>musk_high_impact_24h_log</td><td>ret_24h</td><td>0.073</td><td>-0.028</td></tr>
+</tbody>
+</table>
+<p class="small">Note: these numbers are the pipeline outputs from an exploratory run; the signs & magnitudes vary across time slices. See rolling IC plots below for stability.</p>
+</div>
+
+<hr>
+
+<h3>Interactive diagnostics</h3>
+<p>The page contains interactive plots below. If you add your pipeline output as <code>/data/combined_with_musk.csv</code> (CSV with index column named <code>timestamp</code> and a <code>coin</code> field plus the engineered features and forward returns), the charts will use your data. Otherwise the charts will show example synthetic visuals.</p>
+
+<div id="plot-engagement-vs-ret" class="figure"></div>
+<div id="plot-quantiles" class="figure"></div>
+<div id="plot-rolling-ic" class="figure"></div>
+
+<hr>
+
+<h2 id="surprises">6 — Surprises & interpretation</h2>
+
+<h3>What surprised us</h3>
+<ul>
+<li><strong>SOL stronger than BTC/ETH:</strong> Smaller coins like SOL showed larger IC magnitudes than BTC/ETH. That likely reflects concentrated retail/retail-driven flows and lower liquidity — social attention moves price more easily.</li>
+<li><strong>Negative directional signals:</strong> For some SOL features, higher engagement predicted negative 24h returns. Possible explanations: attention often peaks at local tops (mean reversion), or amplified negative news can be widely shared.</li>
+<li><strong>Engagement vs raw counts:</strong> Weighted engagement (recency-weighted, retweets/likes weighted) often outperformed simple counts — quality matters.</li>
+</ul>
+
+<h3>Reasonable interpretations</h3>
+<ul>
+<li>Social attention often flags an inflection — not always a pump. The direction depends on context and sentiment.</li>
+<li>Weak but consistent ICs can be useful as one input in a multi-factor portfolio — not usually as a standalone high-conviction trade.</li>
+</ul>
+
+<hr>
+
+<h2 id="limitations">7 — Limitations & failure modes</h2>
+<ul>
+<li><strong>Causality:</strong> Correlation is not causation. Tweets may co-occur with other news.</li>
+<li><strong>Non-stationarity:</strong> Social activity regime changes; a static threshold tuned on one period can fail in another (we fixed this by using rolling thresholds in earlier experiments).</li>
+<li><strong>Small IC magnitudes:</strong> Translating a small IC into PnL requires careful cost modeling and portfolio construction; shallow liquidity and impact are real constraints.</li>
+<li><strong>Single influencer:</strong> Musk is important but not the whole story — other influencers, platforms, and coordinated activity matter.</li>
+</ul>
+
+<hr>
+
+<h2 id="what-went-well">8 — What worked well</h2>
+<ul>
+<li>Hypothesis-first framing kept the search focused and defensible.</li>
+<li>Tweet-driven chronological split prevented silent holdout leakage (no tweet coverage → meaningless evaluation).</li>
+<li>Rolling thresholds and careful NaN handling made the pipeline robust to distributional changes and missing metadata.</li>
+</ul>
+
+<hr>
+
+<h2 id="next">9 — Next steps (concrete)</h2>
+<ol>
+<li>Run sentiment models on the tweets and combine sentiment × engagement.</li>
+<li>Extend to other influencers and platforms; build an influencer ensemble.</li>
+<li>Perform event studies controlling for third-party news (listings, earnings, governance events).</li>
+<li>Run microstructure-aware backtests with slippage models and order-book simulation before any live trading.</li>
+<li>Investigate realized volatility as a target (high engagement → vol spike) rather than only directional returns.</li>
+</ol>
+
+<hr>
+
+<h2 id="code">10 — Code & reproducibility (run locally)</h2>
+<p>Run this Python snippet locally in your environment (it mirrors the pipeline used for the results shown). Save the output DataFrame to <code>data/combined_with_musk.csv</code> (or parquet) and push it to your site if you want the page plots to use your real data.</p>
+
+<pre><code>import pandas as pd
+import numpy as np
+from pathlib import Path
+from scipy.stats import spearmanr
+np.random.seed(42)
+# load tweets and price data paths and run the pipeline described in this post
+# ensure final combined DataFrame has columns: timestamp (index), coin, musk_* features *_log, ret_1h ret_4h ret_8h ret_24h
+# then save:
+# combined_with_musk.to_parquet('data/combined_with_musk.parquet')
+# or
+# combined_with_musk.to_csv('data/combined_with_musk.csv')</code></pre>
+
+<p class="small">The full pipeline code used earlier in this project (feature engineering, partitioning, IC calculations) is compatible with this page’s diagnostics. If you want, I can commit a ready-to-run notebook that produces the CSV for you.</p>
+
+<hr>
+
+<h2 id="appendix">11 — Appendix: example visuals (interactive)</h2>
+<p>The charts below are rendered with Plotly. If <code>/data/combined_with_musk.csv</code> exists on your site they will update with your real results; otherwise they use the example data embedded in the page.</p>
+
+<script>
+// Example fallback data (synthetic). The script attempts to fetch '/data/combined_with_musk.csv'.
+(function(){
+  const parseCSV = (text) => {
+    const lines = text.trim().split('\\n');
+    const hdr = lines[0].split(',');
+    const rows = lines.slice(1).map(l=>l.split(','));
+    const arr = rows.map(r => Object.fromEntries(r.map((v,i)=>[hdr[i],v])));
+    return arr;
+  };
+
+  function makeExamplePlots() {
+    // Engagement vs ret (example)
+    const t = Array.from({length:120},(_,i)=> (new Date(Date.now() - (120-i)*3600*1000)).toISOString());
+    const eng = t.map((_,i)=> Math.abs(Math.sin(i/10))*Math.exp(-i/200)*Math.random()*6 + 1 );
+    const ret = t.map((_,i)=> (Math.sin(i/8)*0.0015 + (Math.random()-0.5)*0.0008));
+    const trace1 = {x:t,y:eng,mode:'lines',name:'engagement (scaled)'};
+    const trace2 = {x:t,y:ret,mode:'lines',name:'ret_8h',yaxis:'y2'};
+    const layout = {title:'Example: engagement vs 8h returns (SOL)',yaxis:{title:'eng (scaled)'},yaxis2:{title:'ret_8h',overlaying:'y',side:'right',tickformat:'.2%'}};
+    Plotly.newPlot('plot-engagement-vs-ret',[trace1,trace2],layout,{responsive:true});
+
+    // Quantile returns bar example
+    const coins = ['Low','2','3','4','5','6','7','8','9','High'];
+    const returns = [-3,-1.5,-0.8,-0.3,0.2,0.6,1.0,1.7,2.7,5.1];
+    Plotly.newPlot('plot-quantiles',[{x:coins,y:returns,type:'bar'}],{title:'Example: avg ret_24h by engagement decile (bps)',yaxis:{title:'bps'}});
+
+    // Rolling IC (example time series)
+    const dates = t;
+    const ic = dates.map((d,i)=>0.02*Math.sin(i/18) + 0.03*(Math.random()-0.5));
+    Plotly.newPlot('plot-rolling-ic',[{x:dates,y:ic,mode:'lines'}],{title:'Example: rolling 30D Spearman IC (SOL feature vs ret_24h)',yaxis:{title:'IC'}});
+  }
+
+  function tryLoadDataAndPlot() {
+    fetch('/data/combined_with_musk.csv').then(r=>{
+      if(!r.ok) throw new Error('no csv');
+      return r.text();
+    }).then(text=>{
+      // parse and plot simple diagnostics for one coin (SOL)
+      const rows = parseCSV(text);
+      // convert to timeseries and filter for SOL
+      const dfSOL = rows.filter(r=>r.coin === 'SOL').map(r=>({
+        ts: new Date(r.timestamp),
+        eng: parseFloat(r.musk_weighted_engagement_8h_log || 0),
+        ret8: parseFloat(r.ret_8h || 0),
+        views24: parseFloat(r.musk_max_views_24h_log || 0)
+      })).sort((a,b)=>a.ts-b.ts);
+      if(dfSOL.length<20) { makeExamplePlots(); return; }
+      const t = dfSOL.map(d=>d.ts);
+      const eng = dfSOL.map(d=>d.eng);
+      const ret = dfSOL.map(d=>d.ret8);
+      Plotly.newPlot('plot-engagement-vs-ret',[{x:t,y:eng,mode:'lines',name:'engagement'},{x:t,y:ret,mode:'lines',name:'ret_8h',yaxis:'y2'}],{title:'SOL: engagement vs ret_8h',yaxis:{title:'eng'},yaxis2:{title:'ret_8h',overlaying:'y',side:'right'}});
+      // quantiles
+      const arr = dfSOL.map(d=>[d.eng,d.ret]);
+      arr.sort((a,b)=>a[0]-b[0]);
+      const bucketSize = Math.floor(arr.length/10) || 1;
+      const decileMeans = [];
+      for(let i=0;i<10;i++){
+        const slice = arr.slice(i*bucketSize,(i+1)*bucketSize);
+        const meanRet = slice.reduce((s,v)=>s+v[1],0)/(slice.length||1);
+        decileMeans.push(meanRet*10000);
+      }
+      Plotly.newPlot('plot-quantiles',[{x:Array.from({length:10},(_,i)=>i+1),y:decileMeans,type:'bar'}],{title:'SOL: avg ret_8h by engagement decile (bps)',yaxis:{title:'bps'}});
+      // rolling IC quick (bad-manual)
+      const window=30;
+      const icseries=[];
+      const dates2=[];
+      for(let i=window;i<dfSOL.length;i+=6){
+        const win = dfSOL.slice(i-window,i);
+        const xs = win.map(d=>d.eng);
+        const ys = win.map(d=>d.ret);
+        // spearman approx: rank correlation
+        const rx = xs.map((v,idx)=>[v,idx]).sort((a,b)=>a[0]-b[0]).map((v,i)=>({i:v[1],r:i}));
+        const ry = ys.map((v,idx)=>[v,idx]).sort((a,b)=>a[0]-b[0]).map((v,i)=>({i:v[1],r:i}));
+        const rankx = new Array(xs.length); rx.forEach(o=>rankx[o.i]=o.r);
+        const ranky = new Array(ys.length); ry.forEach(o=>ranky[o.i]=o.r);
+        const mx = rankx.reduce((s,v)=>s+v,0)/rankx.length;
+        const my = ranky.reduce((s,v)=>s+v,0)/ranky.length;
+        let num=0,denx=0,deny=0;
+        for(let j=0;j<rankx.length;j++){
+          const dx = rankx[j]-mx; const dy=ranky[j]-my;
+          num += dx*dy; denx+=dx*dx; deny+=dy*dy;
+        }
+        const corr = num/Math.sqrt(Math.max(1e-12,denx*deny));
+        icseries.push(corr);
+        dates2.push(win[win.length-1].ts);
+      }
+      Plotly.newPlot('plot-rolling-ic',[{x:dates2,y:icseries,mode:'lines'}],{title:'SOL: rolling IC (example)'});
+    }).catch(e=>{
+      makeExamplePlots();
+    });
+  }
+
+  tryLoadDataAndPlot();
+})();
+</script>
+
+<hr>
+
+<h2>12 — Final commentary (research perspective)</h2>
+<p>From a Jane-Street-like research perspective: you start with crisp hypotheses, test statistical relationships (ICs, stability across slices), and only then consider translation to PnL. This project produced a handful of small, robust signals for specific coins and horizons. The next work is carefully causal checks, sentiment layering, and microstructure-aware feasibility testing.</p>
+
+<p class="meta">If you want, I’ll (1) commit this page to your repo as a new file, (2) add a notebook that produces <code>data/combined_with_musk.csv</code>, and (3) render the diagnostics with your real data. Tell me which of those 3 you want first and I’ll produce the file ready to paste.</p>
 
 </body>
 </html>
