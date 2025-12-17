@@ -2,369 +2,41 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Testing Musk's Twitter Influence on Crypto Markets</title>
+<title>Quant Research Blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{max-width:900px;margin:40px auto;padding:0 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.7;color:#1a1a1a;background:#fafafa;}
-h1,h2,h3{font-weight:600;letter-spacing:-0.02em;color:#000;}
-h1{font-size:2.2em;margin:0.5em 0 0.3em 0;line-height:1.2;}
-h2{font-size:1.6em;margin:1.5em 0 0.5em 0;border-bottom:2px solid #e0e0e0;padding-bottom:0.3em;}
-h3{font-size:1.2em;margin:1.2em 0 0.4em 0;}
-.meta{color:#666;font-size:0.9em;margin-bottom:2em;}
-.lead{font-size:1.1em;color:#333;background:#fff;padding:20px;border-left:4px solid #4285f4;margin:1.5em 0;}
-.note{background:#fff3cd;border-left:4px solid #ffc107;padding:15px;margin:1.5em 0;font-size:0.95em;}
-.hypothesis{background:#fff;border:1px solid #e0e0e0;border-radius:6px;padding:20px;margin:1.5em 0;}
-.hypothesis h4{margin:0 0 10px 0;color:#4285f4;font-size:1.1em;}
-.hypothesis p{margin:5px 0;color:#555;}
-table{width:100%;border-collapse:collapse;margin:1.5em 0;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
-th,td{padding:12px;text-align:left;border-bottom:1px solid #e0e0e0;}
-th{background:#f5f5f5;font-weight:600;font-size:0.9em;text-transform:uppercase;letter-spacing:0.05em;}
-td{font-size:0.95em;}
-tr:hover{background:#f9f9f9;}
-.plot-container{background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:20px;margin:2em 0;box-shadow:0 2px 4px rgba(0,0,0,0.05);}
-code{background:#f4f4f4;padding:2px 6px;border-radius:3px;font-family:'Courier New',monospace;font-size:0.9em;}
-pre{background:#2b2b2b;color:#f8f8f8;padding:20px;border-radius:6px;overflow-x:auto;font-size:0.85em;line-height:1.5;}
-.metric{display:inline-block;background:#e8f4f8;padding:8px 16px;border-radius:4px;margin:5px 10px 5px 0;font-weight:500;}
-.metric-label{color:#666;font-size:0.85em;display:block;}
-.metric-value{color:#1976d2;font-size:1.3em;}
-ul{line-height:1.8;}
-a{color:#1976d2;text-decoration:none;}
-a:hover{text-decoration:underline;}
-</style>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Does Elon Musk Move Crypto Markets?<br>A Hypothesis-Driven Investigation</h1>
-<p class="meta">December 2024 · Quantitative Research · Not Investment Advice</p>
-<p class="lead">Dogecoin is instantly synonymous with Elon Musk's tweets, but are Musk's general tweeting patterns predictive of Crypto futures prices?</p>
-<h2>Why This Matters</h2>
-<p>Social media's influence on crypto markets is often discussed but rarely measured rigorously. Musk is particularly interesting: he has 200M+ followers, frequently discusses crypto, and his tweets have been anecdotally linked to price moves. But anecdotes aren't evidence.</p>
-<p>While there are certainly countless hypotheses to be made regarding Musk's tweeting patterns in relation to crypto prices, rather than data-mining hundreds of features hoping something sticks, I wanted to take a disciplined approach. To this end, I formed four specific hypotheses and evaluated them on multiple out-of-sample periods.</p>
-<div class="note">
-<strong>Research Philosophy:</strong> The goal isn't to find a "get rich quick" on crypto signal; it's to understand whether there's measurable, persistent predictive power in social attention metrics, and if so, what that tells us about market microstructure and information propagation.
+<header class="site-header">
+<div class="container">
+<h1>Quant Research Blog</h1>
+<p class="tagline">Hypothesis-driven market research</p>
 </div>
-<h2>The Dataset</h2>
-<p>I worked with two main data sources:</p>
-<div class="metric">
-<span class="metric-label">Musk Events</span>
-<span class="metric-value">6,020</span>
+</header>
+<main class="container">
+<div class="posts-grid">
+<article class="post-card">
+<div class="post-meta">December 2024 · Crypto Markets</div>
+<h2><a href="posts/musk-crypto-analysis.html">Does Elon Musk Move Crypto Markets?</a></h2>
+<p>Testing whether Musk's Twitter activity predicts crypto prices. Spoiler: the signals are weak and mostly counterintuitive.</p>
+<div class="post-tags">
+<span class="tag">Hypothesis Testing</span>
+<span class="tag">Social Media</span>
+<span class="tag">BTC/ETH/SOL/DOGE</span>
 </div>
-<div class="metric">
-<span class="metric-label">Price Bars</span>
-<span class="metric-value">99,360</span>
+<a href="posts/musk-crypto-analysis.html" class="read-more">Read Analysis →</a>
+</article>
+<article class="post-card placeholder">
+<div class="post-meta">Coming Soon</div>
+<h2>Your Next Post</h2>
+<p>Add more research posts here by creating new HTML files in the posts/ directory.</p>
+</article>
 </div>
-<div class="metric">
-<span class="metric-label">Coins</span>
-<span class="metric-value">4</span>
+</main>
+<footer>
+<div class="container">
+<p>Questions or feedback? <a href="mailto:your@email.com">Get in touch</a></p>
 </div>
-<div style="clear:both;margin-bottom:1em;"></div>
-<p><strong>Twitter Data:</strong> All Musk tweets and quote-tweets from 2023-2024, filtered to crypto-related content using keyword matching. For each tweet, I captured engagement metrics: views, likes, retweets, quotes, bookmarks. I combined these into an "engagement score" weighted by impact (e.g., retweets count 2x more than likes).</p>
-<p><strong>Price Data:</strong> Hourly OHLCV bars for BTC, ETH, SOL, and DOGE from Binance futures. I computed forward returns at 1h, 4h, 8h, and 24h horizons.</p>
-<p><strong>Why These Coins?</strong> BTC and ETH are the market leaders. SOL represents the "next tier" by market cap. DOGE has an explicit connection to Musk's Twitter persona. This selection spans different liquidity regimes and community dynamics.</p>
-<h2>Hypotheses</h2>
-<p>I formulated four testable hypotheses based on market microstructure intuition:</p>
-<div class="hypothesis">
-<h4>H1: Visibility</h4>
-<p><strong>Claim:</strong> Tweets with high view counts create broader awareness, leading to increased buying pressure.</p>
-<p><strong>Test:</strong> Does <code>musk_max_views_8h_log</code> correlate with <code>ret_8h</code>?</p>
-<p><strong>Rationale:</strong> Views are a proxy for information reach. More eyes → more potential buyers.</p>
-</div>
-<div class="hypothesis">
-<h4>H2: Engagement Quality</h4>
-<p><strong>Claim:</strong> Weighted engagement (recency-adjusted, action-weighted) predicts returns better than raw tweet counts.</p>
-<p><strong>Test:</strong> Compare <code>musk_weighted_engagement_4h_log</code> IC vs simple count-based features.</p>
-<p><strong>Rationale:</strong> Not all tweets are equal. A highly engaged recent tweet matters more than an old ignored one.</p>
-</div>
-<div class="hypothesis">
-<h4>H3: Coin-Specific Mentions</h4>
-<p><strong>Claim:</strong> Explicit mentions of a coin (e.g., "DOGE" in the text) are more predictive than generic crypto tweets.</p>
-<p><strong>Test:</strong> Does <code>musk_mentions_DOGE_8h</code> have higher IC for DOGE than for other coins?</p>
-<p><strong>Rationale:</strong> Specific signals should be more informative than general noise.</p>
-</div>
-<div class="hypothesis">
-<h4>H4: Accumulated Attention</h4>
-<p><strong>Claim:</strong> 24-hour accumulated views/engagement predicts next-day price moves or volatility.</p>
-<p><strong>Test:</strong> Measure IC of <code>musk_sum_views_24h_log</code> and <code>musk_max_engagement_24h_log</code> vs <code>ret_24h</code>.</p>
-<p><strong>Rationale:</strong> Sustained attention may indicate a regime change rather than a transient spike.</p>
-</div>
-<h2>Feature Engineering</h2>
-<p>For each hourly bar, I computed features based on Musk's activity in the preceding window (4h, 8h, 24h):</p>
-<ul>
-<li><strong>Raw counts:</strong> Number of tweets in window</li>
-<li><strong>Max metrics:</strong> Highest views/engagement in window</li>
-<li><strong>Cumulative metrics:</strong> Sum of views in window</li>
-<li><strong>Weighted engagement:</strong> Exponentially decayed by recency (weight = e^(-0.5t), where t is hours ago)</li>
-<li><strong>Coin mentions:</strong> Binary indicators for whether specific coins were mentioned</li>
-</ul>
-<p>All features were log-transformed (<code>log1p</code>) to handle skewness and ensure the relationship with returns isn't dominated by outliers.</p>
-<h2>Validation Methodology</h2>
-<p>In order to ensure solid results, I made a clean train/test/val split, with an additional 10% of data reserved for true holdout testing, after some slight in-sample tuning.</p>
-<p>My approach:</p>
-<ol>
-<li><strong>Chronological split:</strong> Ordered all timestamps, split into Train (50%), Validation (25%), Test (15%), Holdout (10%)</li>
-<li><strong>No look-ahead bias:</strong> Features at time T only use tweets strictly before T</li>
-<li><strong>Metric:</strong> Spearman rank correlation (IC) between feature and forward returns</li>
-<li><strong>Selection criteria:</strong> Only consider hypotheses with |val_IC| > 0.02, |holdout_IC| > 0.01, and consistent sign</li>
-</ol>
-<p>The Spearman IC is the workhorse metric in quantitative equity research. It measures rank correlation: if the feature ranks coins/times correctly by future returns, IC is high. It's robust to outliers and doesn't assume linearity.</p>
-<h2>Results</h2>
-<p>Here's what I found:</p>
-<h3>Top Hypotheses (Validation IC)</h3>
-<table>
-<tr>
-<th>Hypothesis</th>
-<th>Coin</th>
-<th>Feature</th>
-<th>Val IC</th>
-<th>Hold IC</th>
-</tr>
-<tr>
-<td>H4</td>
-<td>SOL</td>
-<td>max_engagement_24h</td>
-<td style="color:#d32f2f;">-0.082</td>
-<td style="color:#d32f2f;">-0.137</td>
-</tr>
-<tr>
-<td>H4</td>
-<td>SOL</td>
-<td>sum_views_24h</td>
-<td style="color:#d32f2f;">-0.074</td>
-<td style="color:#d32f2f;">-0.085</td>
-</tr>
-<tr>
-<td>H2</td>
-<td>ETH</td>
-<td>weighted_engagement_4h</td>
-<td style="color:#388e3c;">+0.048</td>
-<td style="color:#388e3c;">+0.026</td>
-</tr>
-<tr>
-<td>H4</td>
-<td>ETH</td>
-<td>sum_views_24h</td>
-<td style="color:#d32f2f;">-0.046</td>
-<td style="color:#d32f2f;">-0.102</td>
-</tr>
-<tr>
-<td>H3</td>
-<td>DOGE</td>
-<td>mentions_DOGE_8h</td>
-<td style="color:#d32f2f;">-0.041</td>
-<td style="color:#d32f2f;">-0.016</td>
-</tr>
-<tr>
-<td>H2</td>
-<td>BTC</td>
-<td>weighted_engagement_4h</td>
-<td style="color:#388e3c;">+0.026</td>
-<td style="color:#388e3c;">+0.034</td>
-</tr>
-</table>
-<p><em>Green = positive correlation, Red = negative correlation</em></p>
-<h3>Key Findings</h3>
-<p><strong>1. SOL Shows Strong Negative Signal</strong><br>
-The most robust finding: high Musk engagement in the past 24h predicts <em>negative</em> SOL returns over the next 24h. This held across validation (IC = -0.082) and strengthened in holdout (IC = -0.137).</p>
-<p><strong>2. ETH Has Positive 4h Signal</strong><br>
-Weighted engagement in the past 4h shows a positive but weaker relationship with 4h ETH returns (val IC = 0.048, holdout IC = 0.026).</p>
-<p><strong>3. BTC Is Relatively Immune</strong><br>
-BTC showed the weakest signals overall. Its liquidity and diversified holder base likely make it less susceptible to single-influencer effects.</p>
-<p><strong>4. Coin-Specific Mentions Underperformed</strong><br>
-Surprisingly, explicit coin mentions weren't more predictive than general engagement metrics. When Musk tweets "DOGE," it's often after price already moved.</p>
-<h2>Interactive Analysis</h2>
-<div class="plot-container">
-<h3>Rolling 30-Day IC: SOL Engagement → 24h Returns</h3>
-<div id="rolling-ic-plot"></div>
-<p style="margin-top:15px;color:#666;font-size:0.9em;">This shows how the relationship between Musk engagement and SOL returns evolved over time. Notice the IC is consistently negative, especially in recent periods.</p>
-</div>
-<div class="plot-container">
-<h3>Returns by Engagement Decile: ETH 4h</h3>
-<div id="quantile-plot"></div>
-<p style="margin-top:15px;color:#666;font-size:0.9em;">When we bucket hours by engagement level and compute average forward returns, we see a weak but monotonic relationship for ETH.</p>
-</div>
-<div class="plot-container">
-<h3>Monthly IC: SOL vs ETH</h3>
-<div id="monthly-ic-plot"></div>
-<p style="margin-top:15px;color:#666;font-size:0.9em;">Month-by-month breakdown shows SOL's negative signal is persistent, while ETH is more variable.</p>
-</div>
-<h2>What Surprised Me</h2>
-<p><strong>The SOL Negative Signal</strong><br>
-I expected positive correlation: Musk tweets → attention → buying. But SOL showed the opposite. Why?</p>
-<p>Possible explanations:</p>
-<ul>
-<li><strong>Attention peaks at local tops:</strong> Retail FOMO drives price up, Musk tweets amplify it, then mean reversion kicks in</li>
-<li><strong>Sell-the-news dynamics:</strong> Sophisticated traders buy the rumor, sell when Musk finally tweets</li>
-<li><strong>Negative sentiment:</strong> Some high-engagement tweets are criticisms or FUD</li>
-<li><strong>Liquidity differences:</strong> SOL is less liquid than BTC/ETH, making it more prone to overreactions and reversals</li>
-</ul>
-<p><strong>BTC's Resistance</strong><br>
-BTC barely responded to Musk's tweets. This aligns with the narrative that BTC has "matured" beyond single-influencer effects. Institutional holders don't trade on tweets.</p>
-<p><strong>4h vs 24h Horizon Differences</strong><br>
-Short-horizon (4h) signals were mostly positive or neutral, while 24h signals were negative. This suggests an initial reaction followed by reversal—classic overreaction pattern.</p>
-<h2>Limitations & Honest Assessment</h2>
-<p><strong>Small IC Magnitudes</strong><br>
-An IC of 0.05 is statistically meaningful but economically small. While not the explicit goal, translating this to a strategy for P&L requires careful position sizing, cost modeling, and probably combining it with other signals. This is certainly not a standalone strategy.</p>
-<p><strong>Causality vs Correlation</strong><br>
-I can't prove Musk's tweets <em>cause</em> price moves. Maybe he tweets when he sees interesting price action. Maybe both are driven by third factors (news, macro events). Future event studies with finer timestamp granularity would help isolate causality.</p>
-<p><strong>Regime Changes</strong><br>
-The crypto market in 2023 was very different from 2024. A static model might fail if Musk's influence wanes or if market structure shifts. I saw hints of this in the monthly IC plots, as in some months the signal disappears entirely.</p>
-<p><strong>Sentiment Ignored</strong><br>
-Probably the greatest limitation of this research. For simplicity's sake, I treated all tweets equally by engagement. But a tweet saying "DOGE to the moon!" is different from "Worried about DOGE." Sentiment analysis would add a crucial dimension to future analysis.</p>
-<p><strong>Single Influencer</strong><br>
-Musk isn't the only name in town: Vitalik Buterin, CZ, Michael Saylor, etc are other voices that can certainly matter. An ensemble model across Twitter as a whole, weighted by engagement size, would be more robust.</p>
-<h2>Next Steps</h2>
-<p>If I continue this project, here's what I'd do:</p>
-<ol>
-<li><strong>Sentiment Analysis:</strong> Use LLMs or sentiment models to classify tweets as bullish/bearish/neutral. Test whether sentiment × engagement is more predictive.</li>
-<li><strong>Multivariate Models:</strong> Instead of univariate ICs, build a multi-factor model combining Musk metrics with technical indicators, funding rates, order book imbalance.</li>
-<li><strong>Event Studies:</strong> Zoom into specific high-impact tweets, measure intraday price/volume response with minute-level granularity.</li>
-<li><strong>Other Influencers:</strong> Expand to track 20-30 crypto influencers, build an "attention index."</li>
-<li><strong>Volatility as Target:</strong> Test whether Musk tweets predict volatility spikes rather than directional moves. This might be more reliable.</li>
-<li><strong>Microstructure Simulation:</strong> Before any live trading, I'd need to model slippage, market impact, and execution costs in a realistic way.</li>
-</ol>
-<h2>Conclusion</h2>
-<p>So does Elon Musk move crypto markets? The answer is: <strong>it's complicated</strong>.</p>
-<p>There's measurable signal in his Twitter activity, but it's small, coin-specific, and sometimes counterintuitive. SOL shows a robust negative relationship between attention and forward returns—possibly reflecting overreaction and reversal. ETH shows a weak positive signal at shorter horizons. BTC is largely unaffected.</p>
-<p>This work validates that social attention metrics <em>can</em> contain predictive information, but also shows how difficult it is to extract edge in liquid markets. The signal decays quickly, varies across regimes, and requires sophisticated modeling to be tradeable.</p>
-<p>More importantly, this project was a learning exercise in disciplined research methodology. By forming explicit hypotheses, validating on multiple OOS periods, and being honest about limitations, I avoided the trap of fooling myself with backtests.</p>
-<p>If you're doing similar work, I hope this writeup is useful. The code and data are available—feel free to reproduce, critique, or extend this analysis.</p>
-<div class="note">
-</div>
-<script>
-const parseCSV=(text)=>{
-const lines=text.trim().split('\n');
-const headers=lines[0].split(',');
-return lines.slice(1).map(line=>{
-const values=line.split(',');
-return Object.fromEntries(headers.map((h,i)=>[h.trim(),values[i]]));
-});
-};
-async function loadAndPlot(){
-try{
-const rollingResp=await fetch('rolling_ics.csv');
-const rollingText=await rollingResp.text();
-const rollingData=parseCSV(rollingText);
-const solRolling=rollingData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h'));
-if(solRolling.length>0){
-const dates=solRolling.map(d=>d.date);
-const ics=solRolling.map(d=>parseFloat(d.rolling_ic));
-Plotly.newPlot('rolling-ic-plot',[{
-x:dates,
-y:ics,
-type:'scatter',
-mode:'lines+markers',
-line:{color:'#d32f2f',width:2},
-marker:{size:4}
-}],{
-margin:{l:50,r:30,t:20,b:60},
-xaxis:{title:'Date',gridcolor:'#e0e0e0'},
-yaxis:{title:'Rolling IC',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff'
-},{responsive:true});
-}
-}catch(e){
-const syntheticDates=Array.from({length:120},(_,i)=>new Date(Date.now()-i*86400000).toISOString().split('T')[0]).reverse();
-const syntheticIC=syntheticDates.map((_,i)=>-0.08-0.03*Math.sin(i/20)+0.02*(Math.random()-0.5));
-Plotly.newPlot('rolling-ic-plot',[{
-x:syntheticDates,
-y:syntheticIC,
-type:'scatter',
-mode:'lines+markers',
-line:{color:'#d32f2f',width:2},
-marker:{size:4}
-}],{
-margin:{l:50,r:30,t:20,b:60},
-xaxis:{title:'Date',gridcolor:'#e0e0e0'},
-yaxis:{title:'Rolling IC',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff',
-annotations:[{text:'Synthetic Data (upload rolling_ics.csv)',x:0.5,y:1.1,xref:'paper',yref:'paper',showarrow:false,font:{size:10,color:'#999'}}]
-},{responsive:true});
-}
-try{
-const quantileResp=await fetch('quantile_returns.csv');
-const quantileText=await quantileResp.text();
-const quantileData=parseCSV(quantileText);
-const ethQuant=quantileData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h'));
-if(ethQuant.length>0){
-const deciles=ethQuant.map(d=>parseInt(d.decile));
-const returns=ethQuant.map(d=>parseFloat(d.avg_return));
-Plotly.newPlot('quantile-plot',[{
-x:deciles,
-y:returns,
-type:'bar',
-marker:{color:'#388e3c'}
-}],{
-margin:{l:50,r:30,t:20,b:60},
-xaxis:{title:'Engagement Decile',gridcolor:'#e0e0e0'},
-yaxis:{title:'Avg 4h Return (bps)',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff'
-},{responsive:true});
-}
-}catch(e){
-const deciles=[1,2,3,4,5,6,7,8,9,10];
-const returns=[-2,-1.5,-0.5,0,0.3,0.8,1.2,1.8,2.5,3.2];
-Plotly.newPlot('quantile-plot',[{
-x:deciles,
-y:returns,
-type:'bar',
-marker:{color:'#388e3c'}
-}],{
-margin:{l:50,r:30,t:20,b:60},
-xaxis:{title:'Engagement Decile',gridcolor:'#e0e0e0'},
-yaxis:{title:'Avg 4h Return (bps)',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff',
-annotations:[{text:'Synthetic Data',x:0.5,y:1.1,xref:'paper',yref:'paper',showarrow:false,font:{size:10,color:'#999'}}]
-},{responsive:true});
-}
-try{
-const monthlyResp=await fetch('monthly_ics.csv');
-const monthlyText=await monthlyResp.text();
-const monthlyData=parseCSV(monthlyText);
-const solMonthly=monthlyData.filter(d=>d.coin==='SOL'&&d.feature.includes('max_engagement_24h'));
-const ethMonthly=monthlyData.filter(d=>d.coin==='ETH'&&d.feature.includes('weighted_engagement_4h'));
-if(solMonthly.length>0&&ethMonthly.length>0){
-const months=solMonthly.map(d=>d.month.substring(0,7));
-const solICs=solMonthly.map(d=>parseFloat(d.monthly_ic));
-const ethICs=ethMonthly.map(d=>parseFloat(d.monthly_ic));
-Plotly.newPlot('monthly-ic-plot',[
-{x:months,y:solICs,type:'scatter',mode:'lines+markers',name:'SOL (24h)',line:{color:'#d32f2f',width:2}},
-{x:months,y:ethICs,type:'scatter',mode:'lines+markers',name:'ETH (4h)',line:{color:'#388e3c',width:2}}
-],{
-margin:{l:50,r:30,t:20,b:80},
-xaxis:{title:'Month',gridcolor:'#e0e0e0',tickangle:-45},
-yaxis:{title:'Monthly IC',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff',
-legend:{x:0.02,y:0.98}
-},{responsive:true});
-}
-}catch(e){
-const months=['2024-01','2024-02','2024-03','2024-04','2024-05','2024-06','2024-07','2024-08'];
-const solICs=[-0.09,-0.11,-0.08,-0.13,-0.10,-0.12,-0.14,-0.11];
-const ethICs=[0.03,0.05,0.02,0.04,0.01,0.03,0.02,0.04];
-Plotly.newPlot('monthly-ic-plot',[
-{x:months,y:solICs,type:'scatter',mode:'lines+markers',name:'SOL (24h)',line:{color:'#d32f2f',width:2}},
-{x:months,y:ethICs,type:'scatter',mode:'lines+markers',name:'ETH (4h)',line:{color:'#388e3c',width:2}}
-],{
-margin:{l:50,r:30,t:20,b:80},
-xaxis:{title:'Month',gridcolor:'#e0e0e0',tickangle:-45},
-yaxis:{title:'Monthly IC',gridcolor:'#e0e0e0',zeroline:true,zerolinecolor:'#999'},
-plot_bgcolor:'#fafafa',
-paper_bgcolor:'#fff',
-legend:{x:0.02,y:0.98},
-annotations:[{text:'Synthetic Data',x:0.5,y:1.1,xref:'paper',yref:'paper',showarrow:false,font:{size:10,color:'#999'}}]
-},{responsive:true});
-}
-}
-loadAndPlot();
-</script>
-<hr style="margin:3em 0;border:none;border-top:1px solid #e0e0e0;">
-<p style="text-align:center;color:#999;font-size:0.9em;">
-Questions? Critiques? Found this useful? <a href="mailto:your@email.com">Reach out</a> or fork the code.
-</p>
+</footer>
 </body>
 </html>
