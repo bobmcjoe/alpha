@@ -36,12 +36,12 @@ a:hover{text-decoration:underline;}
 <body>
 <h1>Does Elon Musk Move Crypto Markets?<br>A Hypothesis-Driven Investigation</h1>
 <p class="meta">December 2024 · Quantitative Research · Not Investment Advice</p>
-<p class="lead">I spent the last few weeks testing whether Elon Musk's Twitter activity contains predictive information for short-term cryptocurrency returns. This post documents the entire research process: hypothesis formation, feature engineering, validation methodology, results, and what I learned.</p>
+<p class="lead">Dogecoin is instantly synonymous with Elon Musk's tweets, but are Musk's general tweeting patterns predictive of Crypto futures prices?</p>
 <h2>Why This Matters</h2>
 <p>Social media's influence on crypto markets is often discussed but rarely measured rigorously. Musk is particularly interesting: he has 200M+ followers, frequently discusses crypto, and his tweets have been anecdotally linked to price moves. But anecdotes aren't evidence.</p>
-<p>Rather than data-mining hundreds of features hoping something sticks, I wanted to take a disciplined approach: form specific hypotheses, engineer features to test those hypotheses, and evaluate them on multiple out-of-sample periods.</p>
+<p>While there are certainly countless hypotheses to be made regarding Musk's tweeting patterns in relation to crypto prices, rather than data-mining hundreds of features hoping something sticks, I wanted to take a disciplined approach. To this end, I formed four specific hypotheses and evaluated them on multiple out-of-sample periods.</p>
 <div class="note">
-<strong>Research Philosophy:</strong> The goal isn't to find a "get rich quick" signal. It's to understand whether there's measurable, persistent predictive power in social attention metrics, and if so, what that tells us about market microstructure and information propagation.
+<strong>Research Philosophy:</strong> The goal isn't to find a "get rich quick" on crypto signal; it's to understand whether there's measurable, persistent predictive power in social attention metrics, and if so, what that tells us about market microstructure and information propagation.
 </div>
 <h2>The Dataset</h2>
 <p>I worked with two main data sources:</p>
@@ -98,7 +98,7 @@ a:hover{text-decoration:underline;}
 </ul>
 <p>All features were log-transformed (<code>log1p</code>) to handle skewness and ensure the relationship with returns isn't dominated by outliers.</p>
 <h2>Validation Methodology</h2>
-<p>This is where most retail research fails. I see people all the time who backtest on the same data they used to develop features. That's a recipe for overfitting.</p>
+<p>In order to ensure solid results, I made a clean train/test/val split, with an additional 10% of data reserved for true holdout testing, after some slight in-sample tuning.</p>
 <p>My approach:</p>
 <ol>
 <li><strong>Chronological split:</strong> Ordered all timestamps, split into Train (50%), Validation (25%), Test (15%), Holdout (10%)</li>
@@ -203,24 +203,15 @@ BTC barely responded to Musk's tweets. This aligns with the narrative that BTC h
 Short-horizon (4h) signals were mostly positive or neutral, while 24h signals were negative. This suggests an initial reaction followed by reversal—classic overreaction pattern.</p>
 <h2>Limitations & Honest Assessment</h2>
 <p><strong>Small IC Magnitudes</strong><br>
-An IC of 0.05 is statistically meaningful but economically small. Translating this to P&L requires careful position sizing, cost modeling, and probably combining it with other signals. This is not a standalone strategy.</p>
+An IC of 0.05 is statistically meaningful but economically small. While not the explicit goal, translating this to a strategy for P&L requires careful position sizing, cost modeling, and probably combining it with other signals. This is certainly not a standalone strategy.</p>
 <p><strong>Causality vs Correlation</strong><br>
-I can't prove Musk's tweets <em>cause</em> price moves. Maybe he tweets when he sees interesting price action. Maybe both are driven by third factors (news, macro events). Event studies with finer timestamp granularity would help isolate causality.</p>
+I can't prove Musk's tweets <em>cause</em> price moves. Maybe he tweets when he sees interesting price action. Maybe both are driven by third factors (news, macro events). Future event studies with finer timestamp granularity would help isolate causality.</p>
 <p><strong>Regime Changes</strong><br>
-The crypto market in 2023 was very different from 2024. A static model might fail if Musk's influence wanes or if market structure shifts. I saw hints of this in the monthly IC plots—some months the signal disappears entirely.</p>
+The crypto market in 2023 was very different from 2024. A static model might fail if Musk's influence wanes or if market structure shifts. I saw hints of this in the monthly IC plots, as in some months the signal disappears entirely.</p>
 <p><strong>Sentiment Ignored</strong><br>
-I treated all tweets equally by engagement. But a tweet saying "DOGE to the moon!" is different from "Worried about DOGE." Sentiment analysis would add a crucial dimension.</p>
+Probably the greatest limitation of this research. For simplicity's sake, I treated all tweets equally by engagement. But a tweet saying "DOGE to the moon!" is different from "Worried about DOGE." Sentiment analysis would add a crucial dimension to future analysis.</p>
 <p><strong>Single Influencer</strong><br>
-Musk isn't the only game in town. Vitalik Buterin, CZ, Michael Saylor—other voices matter. An ensemble model would be more robust.</p>
-<h2>What Went Well</h2>
-<p><strong>Disciplined Process</strong><br>
-Hypothesis-first thinking kept me from p-hacking. I defined what I was looking for before running any tests.</p>
-<p><strong>Multiple OOS Periods</strong><br>
-Using train/val/test/holdout exposed me to the harsh reality of signal decay. Many "promising" features from training died in validation.</p>
-<p><strong>Robust Feature Engineering</strong><br>
-Log transforms, recency weighting, and careful handling of missing data made the features work across different market regimes.</p>
-<p><strong>Realistic Expectations</strong><br>
-I didn't find a money printer. I found small, interesting correlations that might be useful as part of a larger system. That's honest research.</p>
+Musk isn't the only name in town: Vitalik Buterin, CZ, Michael Saylor, etc are other voices that can certainly matter. An ensemble model across Twitter as a whole, weighted by engagement size, would be more robust.</p>
 <h2>Next Steps</h2>
 <p>If I continue this project, here's what I'd do:</p>
 <ol>
@@ -238,7 +229,6 @@ I didn't find a money printer. I found small, interesting correlations that migh
 <p>More importantly, this project was a learning exercise in disciplined research methodology. By forming explicit hypotheses, validating on multiple OOS periods, and being honest about limitations, I avoided the trap of fooling myself with backtests.</p>
 <p>If you're doing similar work, I hope this writeup is useful. The code and data are available—feel free to reproduce, critique, or extend this analysis.</p>
 <div class="note">
-<strong>Reproducibility:</strong> All code and data exports are available. To generate these plots with your own data, place the exported CSVs in the same directory as this HTML file. The JavaScript below will automatically load and visualize them.
 </div>
 <script>
 const parseCSV=(text)=>{
